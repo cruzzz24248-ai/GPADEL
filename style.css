@@ -153,9 +153,8 @@ b{font-weight:600;color:var(--ink)}
 .event__card li .i{color:var(--terra)}
 .event__arc{position:absolute;right:-10px;bottom:-10px;width:170px;fill:none;stroke:var(--terra);stroke-width:1;opacity:.8;pointer-events:none}
 
-.where{display:grid;grid-template-columns:.9fr 1.4fr 1.1fr .8fr;align-items:center;gap:clamp(1rem,2.5vw,2.5rem);background:var(--band);padding-right:var(--gut);margin-top:clamp(2rem,4vw,3rem);transition:background-color .5s}
-.where__img{align-self:stretch;min-height:200px}
-.where__info{padding-block:2rem}
+.where{display:grid;grid-template-columns:1.3fr 1fr .7fr;align-items:center;gap:clamp(1.5rem,3.5vw,3rem);background:var(--band);padding-block:clamp(2rem,4vw,3rem);padding-inline:max(var(--gut),calc((100% - var(--wrap))/2));margin-top:clamp(2rem,4vw,3rem);transition:background-color .5s}
+.where__info{padding:0}
 .where__rows{display:flex;flex-wrap:wrap;gap:1rem 2rem;margin-top:1.1rem}
 .where__rows p{display:flex;gap:.6rem;font-size:.74rem;line-height:1.5}
 .where__rows .i{color:var(--terra);width:1.15rem;height:1.15rem;margin-top:.1rem}
@@ -247,11 +246,8 @@ b{font-weight:600;color:var(--ink)}
 
 /* ---- Responsive ---- */
 @media (max-width:1060px){
-  .where{grid-template-columns:1fr 1fr;padding-right:0}
-  .where__img{grid-row:1/3}
-  .where__map{margin-right:var(--gut)}
-  .where__links{grid-column:2;padding:0 var(--gut) 1.5rem 0}
-  .where__info{padding-right:var(--gut)}
+  .where{grid-template-columns:1fr 1fr;gap:1.5rem}
+  .where__links{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:.8rem 2rem}
   .strip{grid-template-columns:repeat(3,1fr)}
   .sport{grid-template-columns:1fr}
   .sport .ph{aspect-ratio:16/9}
@@ -293,10 +289,8 @@ b{font-weight:600;color:var(--ink)}
   .feat{grid-template-columns:1fr}
   .strip{grid-template-columns:repeat(2,1fr)}
   .strip .ph:nth-child(even){transform:none}
-  .where{grid-template-columns:1fr}
-  .where__img{grid-row:auto;min-height:180px}
-  .where__info,.where__map,.where__links{margin:0;padding:1rem var(--gut)}
-  .where__links{grid-column:auto}
+  .where{grid-template-columns:1fr;gap:1.2rem}
+  .where__links{grid-column:auto;flex-direction:column;gap:.8rem}
   .footer__top,.footer__bot{flex-direction:column;align-items:flex-start}
 }
 @media (max-width:480px){
