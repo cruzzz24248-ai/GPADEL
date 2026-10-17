@@ -1,0 +1,25 @@
+{
+  "name": "GPadel · Pádel y pickleball en Córdoba",
+  "short_name": "GPadel",
+  "description": "Reservá tu cancha de pádel o pickleball en Córdoba capital.",
+  "lang": "es-AR",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#FFFFFF",
+  "theme_color": "#2D7647",
+  "icons": [
+    {
+      "src": "img/icono.jpg",
+      "sizes": "192x192",
+      "type": "image/jpeg",
+      "purpose": "any"
+    },
+    {
+      "src": "img/icono.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg",
+      "purpose": "any"
+    }
+  ]
+}

@@ -1,4 +1,4 @@
-/* ============ G PADEL — main.js (v4) ============ */
+/* ============ G PADEL — main.js (v6 · imágenes por carpetas + galerías unificadas) ============ */
 (() => {
   'use strict';
   const $ = (s, c = document) => c.querySelector(s);
@@ -12,49 +12,27 @@
   /* URL de la app web de Google Apps Script (ver Code.gs). Vacío = vista de demostración */
   const API = '';
 
-  /* ---------- Imágenes por tema: nombre-claro.jpg / nombre-oscuro.jpg / nombre.jpg ---------- */
-  function loadImg(img, theme) {
+  /* ---------- Imágenes: data-img="carpeta/nombre" → img/carpeta/nombre.(webp|jpg|png…) ----------
+     Ejemplos: data-img="padel/hero"      → img/padel/hero.webp
+               data-img="principal/hero"  → img/principal/hero.webp
+     Si usás un solo formato, dejá solo ese en EXTS y evitás pedidos de más. */
+  const IMG_DIR = 'img/';
+  const EXTS = ['webp', 'jpg', 'png', 'jpeg', 'avif'];
+
+  function loadImg(img) {
     const n = img.dataset.img, fig = img.closest('.ph');
-    const tries = [`img/${n}-${theme === 'dark' ? 'oscuro' : 'claro'}.jpg`, `img/${n}.jpg`];
+    const tries = EXTS.map(e => `${IMG_DIR}${n}.${e}`);
     let i = 0;
     img.onload = () => fig && fig.classList.remove('missing');
-    img.onerror = () => { i++; i < tries.length ? (img.src = tries[i]) : fig && fig.classList.add('missing'); };
+    img.onerror = () => {
+      i++;
+      if (i < tries.length) { img.src = tries[i]; return; }
+      if (fig) { fig.classList.add('missing'); fig.dataset.path = `${IMG_DIR}${n}.${EXTS[0]}`; }
+      console.warn(`[GPadel] No se encontró la imagen "${n}". Probé:`, tries);
+    };
     img.src = tries[0];
   }
-  const swapImages = t => $$('img[data-img]').forEach(img => loadImg(img, t));
-
-  /* ---------- Tema: manual + preferencia del dispositivo ---------- */
-  const KEY = 'gpadel-theme';
-  const store = {
-    get() { try { return localStorage.getItem(KEY); } catch (e) { return null; } },
-    set(v) { try { localStorage.setItem(KEY, v); } catch (e) {} }
-  };
-  const sysDark = matchMedia('(prefers-color-scheme: dark)');
-  const meta = $('meta[name="theme-color"]');
-  const toggle = $('#themeToggle');
-
-  function paint(t) {
-    root.dataset.theme = t;
-    meta && meta.setAttribute('content', t === 'dark' ? '#0E2318' : '#FFFFFF');
-    toggle.setAttribute('aria-label', t === 'dark' ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro');
-    swapImages(t);
-  }
-  function setTheme(t, origin) {
-    if (origin && document.startViewTransition && !reduce) {
-      root.style.setProperty('--vx', origin.x + 'px');
-      root.style.setProperty('--vy', origin.y + 'px');
-      document.startViewTransition(() => paint(t));
-    } else paint(t);
-  }
-  toggle.addEventListener('click', () => {
-    const r = toggle.getBoundingClientRect();
-    const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
-    store.set(next);
-    setTheme(next, { x: r.left + r.width / 2, y: r.top + r.height / 2 });
-  });
-  /* Sin elección manual, el sitio sigue al dispositivo en vivo */
-  sysDark.addEventListener('change', e => { if (!store.get()) setTheme(e.matches ? 'dark' : 'light'); });
-  paint(root.dataset.theme || (sysDark.matches ? 'dark' : 'light'));
+  $$('img[data-img]').forEach(loadImg);
 
   /* ---------- Titular: revelado palabra por palabra ---------- */
   $$('[data-split]').forEach(el => {
@@ -93,8 +71,8 @@
   }, { threshold: .15, rootMargin: '0px 0px -6% 0px' });
   $$('[data-reveal], [data-count], .draw:not(.hero__g)').forEach(el => io.observe(el));
 
-  /* ---------- Horarios del club (hora de Buenos Aires) ---------- */
-  const TZ = 'America/Argentina/Buenos_Aires';
+  /* ---------- Horarios del club (hora de Córdoba) ---------- */
+  const TZ = 'America/Argentina/Cordoba';
   const HOURS = { week: [8, 23], weekend: [9, 22] };   // [apertura, cierre]
   const DAYS = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
   const clubNow = () => new Date(new Date().toLocaleString('en-US', { timeZone: TZ }));
@@ -264,7 +242,138 @@
     document.addEventListener('visibilitychange', () => { if (!document.hidden) refresh(); });
   }
 
-  /* ---------- Botón flotante de WhatsApp: aparece tras el hero, se oculta en reservas/CTA/footer ---------- */
+  /* ---------- Galerías (varias por página): visor, cinta, mosaico, pelota ---------- */
+  function initGalleries() {
+    const galleries = $$('.gal');
+    if (!galleries.length) return;
+    const EASE = 'cubic-bezier(.22,.8,.2,1)';
+    const flip = (a, z) => `translate(${a.left - z.left}px,${a.top - z.top}px) scale(${a.width / z.width},${a.height / z.height})`;
+
+    /* Visor compartido: crece desde la foto, swipe, teclado */
+    const lb = $('#lb');
+    let list = [], cur = 0, show = () => {}, openFrom = () => {};
+    if (lb) {
+      const box = $('.lb__ph', lb), img = $('img', lb), cap = $('#lbCap'), count = $('#lbCount');
+      img.onload = () => box.classList.remove('missing');
+      img.onerror = () => box.classList.add('missing');
+      show = (i, dir) => {
+        cur = (i + list.length) % list.length;
+        const t = $('img', list[cur]);
+        box.classList.toggle('missing', $('.ph', list[cur]).classList.contains('missing'));
+        img.src = t.currentSrc || t.src; img.alt = t.alt;
+        cap.textContent = t.alt; count.textContent = `${cur + 1} / ${list.length}`;
+        if (dir && !reduce) box.animate([{ opacity: 0, transform: `translateX(${dir * 40}px)` }, { opacity: 1, transform: 'none' }], { duration: 400, easing: EASE });
+      };
+      $('.lb__prev', lb).addEventListener('click', () => show(cur - 1, -1));
+      $('.lb__next', lb).addEventListener('click', () => show(cur + 1, 1));
+      $('.lb__x', lb).addEventListener('click', () => lb.close());
+      lb.addEventListener('click', e => { if (e.target === lb || e.target.classList.contains('lb__stage')) lb.close(); });
+      lb.addEventListener('keydown', e => {
+        if (e.key === 'ArrowRight') show(cur + 1, 1);
+        if (e.key === 'ArrowLeft') show(cur - 1, -1);
+      });
+      let x0 = null;
+      box.addEventListener('pointerdown', e => { x0 = e.clientX; });
+      box.addEventListener('pointerup', e => {
+        if (x0 === null) return;
+        const dx = e.clientX - x0; x0 = null;
+        if (Math.abs(dx) > 50) show(cur + (dx < 0 ? 1 : -1), dx < 0 ? 1 : -1);
+      });
+      openFrom = (g, it) => {
+        list = $$('.gal__item', g).filter(i => !i.hidden);
+        lb.showModal(); show(list.indexOf(it));
+        if (!reduce) box.animate([{ transform: flip($('.ph', it).getBoundingClientRect(), box.getBoundingClientRect()) }, { transform: 'none' }], { duration: 650, easing: EASE });
+      };
+    }
+
+    galleries.forEach(g => {
+      g.addEventListener('click', e => {
+        const it = e.target.closest('.gal__item');
+        if (it && lb) openFrom(g, it);
+      });
+
+      /* ----- Cinta: arrastre con mouse + foco al centro ----- */
+      const track = $('.gal__track', g);
+      if (track) {
+        const line = $('.gal__line i', g);
+        const focus = () => {
+          const r = track.getBoundingClientRect(), c = r.left + r.width / 2;
+          $$('.gal__item', track).forEach(it => {
+            const b = it.getBoundingClientRect();
+            it.style.setProperty('--k', (1 - Math.min(Math.abs(b.left + b.width / 2 - c) / (r.width * .6), 1)).toFixed(3));
+          });
+          const m = track.scrollWidth - track.clientWidth;
+          if (line) line.style.transform = `scaleX(${m > 0 ? track.scrollLeft / m : 0})`;
+        };
+        track.addEventListener('scroll', () => requestAnimationFrame(focus), { passive: true });
+        addEventListener('resize', focus);
+        focus();
+        let down = false, sx = 0, sl = 0, moved = 0;
+        track.addEventListener('pointerdown', e => {
+          if (e.pointerType !== 'mouse') return;
+          down = true; sx = e.clientX; sl = track.scrollLeft; moved = 0;
+        });
+        addEventListener('pointermove', e => {
+          if (!down) return;
+          const dx = e.clientX - sx; moved = Math.max(moved, Math.abs(dx));
+          if (moved > 6) track.classList.add('is-drag');
+          track.scrollLeft = sl - dx;
+        });
+        addEventListener('pointerup', () => { down = false; track.classList.remove('is-drag'); });
+        track.addEventListener('click', e => { if (moved > 6) { e.stopPropagation(); e.preventDefault(); moved = 0; } }, true);
+      }
+
+      /* ----- Mosaico: revelado + filtros animados ----- */
+      const grid = $('.gal__grid', g);
+      if (grid) {
+        const gio = new IntersectionObserver((es, o) => es.forEach(en => {
+          if (en.isIntersecting) { en.target.classList.add('in'); o.unobserve(en.target); }
+        }), { threshold: .12 });
+        $$('.gal__item', grid).forEach((it, i) => { it.style.setProperty('--d', (i * .08) + 's'); gio.observe(it); });
+        const bar = $('.gal__filters', g);
+        bar && bar.addEventListener('click', e => {
+          const b = e.target.closest('.chip');
+          if (!b) return;
+          $$('.chip', bar).forEach(c => c.setAttribute('aria-pressed', c === b));
+          const f = b.dataset.f, all = $$('.gal__item', grid);
+          const first = new Map(all.map(i => [i, i.getBoundingClientRect()]));
+          all.forEach(i => { i.hidden = !(f === 'all' || i.dataset.cat === f); i.classList.add('in'); });
+          grid.classList.toggle('is-filtered', f !== 'all');
+          if (reduce) return;
+          all.forEach(i => {
+            if (i.hidden) return;
+            const a = first.get(i), z = i.getBoundingClientRect();
+            i.animate(a.width
+              ? [{ transform: flip(a, z) }, { transform: 'none' }]
+              : [{ opacity: 0, transform: 'scale(.9)' }, { opacity: 1, transform: 'none' }],
+            { duration: 550, easing: EASE });
+          });
+        });
+      }
+
+      /* ----- Pelota que sigue al cursor (solo mouse) ----- */
+      const ball = $('.gal__ball', g);
+      if (ball && finePointer && !reduce) {
+        let x = 0, y = 0, tx = 0, ty = 0, on = false;
+        const loop = () => {
+          if (!on) return;
+          x += (tx - x) * .16; y += (ty - y) * .16;
+          ball.style.transform = `translate(${x}px,${y}px)`;
+          requestAnimationFrame(loop);
+        };
+        g.addEventListener('pointermove', e => {
+          if (e.pointerType !== 'mouse') return;
+          const r = g.getBoundingClientRect(); tx = e.clientX - r.left; ty = e.clientY - r.top;
+          if (!on) { x = tx; y = ty; on = true; ball.classList.add('on'); loop(); }
+          g.classList.toggle('is-hov', !!e.target.closest('.gal__item'));
+        });
+        g.addEventListener('pointerleave', () => { on = false; ball.classList.remove('on'); g.classList.remove('is-hov'); });
+      }
+    });
+  }
+  initGalleries();
+
+  /* ---------- Botón flotante de WhatsApp ---------- */
   const fab = $('#fab'), hide = new Set();
   let pastHero = false;
   const fabUpdate = y => {
@@ -286,7 +395,7 @@
   function onScroll() {
     const y = scrollY, max = root.scrollHeight - innerHeight;
     progress.style.transform = `scaleX(${max > 0 ? y / max : 0})`;
-    header.classList.toggle('is-scrolled', y > 20);   /* el navbar queda siempre visible */
+    header.classList.toggle('is-scrolled', y > 20);
     fabUpdate(y);
     if (!reduce) parallax.forEach(img => {
       const r = img.parentElement.getBoundingClientRect();

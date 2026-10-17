@@ -3,20 +3,65 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Pádel — GPadel</title>
-<meta name="description" content="Pádel en GPadel: 4 canchas de cristal, turnos de 1 hora y reserva online al instante.">
+<title>Pádel en Córdoba capital · Canchas de cristal | GPadel</title>
+<meta name="description" content="Alquilá canchas de pádel de cristal en Córdoba capital. 4 canchas, turnos de 1 hora y reserva online al instante en GPadel.">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<link rel="canonical" href="https://TU-DOMINIO.com.ar/padel.html">
 <meta name="theme-color" content="#FFFFFF">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%232D7647'/%3E%3Ctext x='32' y='44' font-size='36' text-anchor='middle' fill='white' font-family='Georgia,serif'%3EG%3C/text%3E%3C/svg%3E">
+<meta name="application-name" content="GPadel">
+<meta name="apple-mobile-web-app-title" content="GPadel">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="geo.region" content="AR-X">
+<meta name="geo.placename" content="Córdoba">
+<!-- Íconos: pestaña del navegador, acceso directo en el celular e instalación -->
+<link rel="icon" type="image/jpeg" href="img/marcas/icono.jpg">
+<link rel="shortcut icon" type="image/jpeg" href="img/marcas/icono.jpg">
+<link rel="apple-touch-icon" href="img/marcas/icono.jpg">
+<link rel="manifest" href="site.webmanifest">
+<!-- Redes sociales -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="GPadel">
+<meta property="og:locale" content="es_AR">
+<meta property="og:url" content="https://TU-DOMINIO.com.ar/padel.html">
+<meta property="og:title" content="Pádel en Córdoba capital · GPadel">
+<meta property="og:description" content="4 canchas de pádel de cristal, turnos de 1 hora y reserva online al instante.">
+<meta property="og:image" content="https://TU-DOMINIO.com.ar/img/marcas/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="GPadel, club de pádel y pickleball en Córdoba capital">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Pádel en Córdoba capital · GPadel">
+<meta name="twitter:description" content="4 canchas de pádel de cristal, turnos de 1 hora y reserva online al instante.">
+<meta name="twitter:image" content="https://TU-DOMINIO.com.ar/img/marcas/og.jpg">
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@type": "BreadcrumbList",
+ "itemListElement": [
+  {
+   "@type": "ListItem",
+   "position": 1,
+   "name": "Inicio",
+   "item": "https://TU-DOMINIO.com.ar/"
+  },
+  {
+   "@type": "ListItem",
+   "position": 2,
+   "name": "Pádel",
+   "item": "https://TU-DOMINIO.com.ar/padel.html"
+  }
+ ]
+}
+</script>
 <script>
 document.documentElement.classList.add('js');
-(function(){try{var t=localStorage.getItem('gpadel-theme');if(!t)t=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';document.documentElement.dataset.theme=t}catch(e){}})();
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inria+Serif:wght@300;400;700&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=3">
+<link rel="stylesheet" href="style.css">
 </head>
-<body class="pg pg-padel">
+<body class="pg pg-green">
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <defs>
     <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
@@ -38,20 +83,16 @@ document.documentElement.classList.add('js');
 <div class="progress" aria-hidden="true"></div>
 <header class="site-header">
   <div class="wrap bar">
-    <a class="logo" href="index.html#inicio" aria-label="GPadel, inicio"><b>GPADEL</b><small>Club · Padel · Pickleball</small></a>
+    <a class="logo" href="index.html#inicio"><img src="img/marcas/logo-V.png" alt="GPadel — Club de pádel y pickleball en Córdoba" height="60" decoding="async" fetchpriority="high"></a>
     <nav class="nav" id="nav" aria-label="Principal">
       <a href="index.html#inicio">Inicio</a>
       <a href="index.html#canchas">Canchas</a>
       <a href="index.html#club">El club</a>
-      <a href="index.html#torneos">Torneos</a>
-      <a href="index.html#eventos">Eventos</a>
+      <a href="index.html#torneos">Torneos y eventos</a>
       <a href="index.html#contacto">Contacto</a>
     </nav>
     <div class="actions">
-      <button class="theme-toggle" id="themeToggle" type="button" aria-label="Cambiar tema">
-        <svg class="i i-sun"><use href="index.html#i-sun"/></svg>
-        <svg class="i i-moon"><use href="index.html#i-moon"/></svg>
-      </button>
+      
       <a class="btn btn--terra btn--sm" href="index.html#reservar" data-magnetic><span>Reservar</span></a>
       <button class="burger" id="burger" type="button" aria-label="Abrir menú" aria-expanded="false" aria-controls="nav"><span></span><span></span></button>
     </div>
@@ -64,7 +105,7 @@ document.documentElement.classList.add('js');
 <div class="hero__cta" data-reveal style="--d:.65s"><a class="btn btn--main btn--lg" href="index.html#reservar" data-magnetic><span>Reservar turno</span></a><a class="btn btn--line btn--lg" href="#juego"><span>Cómo se juega</span></a></div>
 <div class="sp-stats" data-reveal style="--d:.8s"><p><b data-count="4">4</b><span>canchas</span></p><p><b>1 h</b><span>por turno</span></p><p><b>8 a 23</b><span>lun a vie · sáb y dom 9 a 22</span></p></div>
 <p class="open-now js-open"></p></div>
-<figure class="ph" data-reveal="clip"><img data-img="padel" alt="Cancha de pádel de cristal"></figure></div></section>
+<figure class="ph" data-reveal="clip"><img data-img="padel/portada" alt="Cancha de pádel de cristal"></figure></div></section>
 <section class="wrap sec" id="juego"><header class="sec__head" data-reveal><div><p class="eyebrow">Cómo se juega</p><h2>Un deporte que se aprende rápido.</h2></div></header><div class="sp-grid"><article class="card sp-card" data-reveal style="--d:0.0s"><svg class="i"><use href="#i-users"/></svg><h3>Se juega de a cuatro</h3><p>En parejas, así que siempre hay con quién compartir el partido.</p></article><article class="card sp-card" data-reveal style="--d:0.1s"><svg class="i"><use href="#i-trophy"/></svg><h3>Las paredes son parte del juego</h3><p>La pelota puede rebotar en el cristal y seguir en juego: los puntos duran más.</p></article><article class="card sp-card" data-reveal style="--d:0.2s"><svg class="i"><use href="#i-cal"/></svg><h3>Turnos de 1 hora</h3><p>Elegí día y horario libre y confirmá tu cancha en segundos.</p></article></div></section>
 <section class="wrap sec sec--green" id="club-padel"><header class="sec__head" data-reveal><div><p class="eyebrow">El club</p><h2>Antes y después del partido.</h2></div></header><ul class="feat">
         <li class="card" data-reveal style="--d:.1s"><svg class="i"><use href="#i-trophy"/></svg><div><b>Bar</b><span>Para compartir antes o después del partido.</span></div></li>
@@ -74,12 +115,12 @@ document.documentElement.classList.add('js');
       </ul></section>
 <section class="wrap sec sp-split"><div data-reveal><p class="eyebrow">Torneos</p><h2>Competí o jugá por diversión.</h2><p class="sub">Organizamos torneos para distintos niveles. Los anunciamos en nuestro Instagram @gpadel_club.</p></div>
 <article class="card event__card" data-reveal style="--d:.1s"><p class="meta">Próximo evento</p><h3>Torneo de Pádel Social</h3><ul><li><svg class="i"><use href="#i-cal"/></svg>Sáb 26 de abr</li><li><svg class="i"><use href="#i-trophy"/></svg>Categoría: Nivel intermedio</li><li><svg class="i"><use href="#i-users"/></svg>Masculino y femenino</li></ul><a class="link link--terra" data-wa="Hola! Quiero info del Torneo de Pádel Social." href="#" target="_blank" rel="noopener">Consultar inscripción <svg class="i"><use href="#i-arrow"/></svg></a><svg class="event__arc draw" viewBox="0 0 120 120" aria-hidden="true"><path pathLength="1" d="M10 110A100 100 0 0 1 110 10"/><path pathLength="1" d="M10 110A55 55 0 0 1 65 55"/></svg></article></section>
-<section class="cta"><svg class="cta__g draw" viewBox="0 0 120 120" aria-hidden="true"><path pathLength="1" d="M95 30A46 46 0 1 0 106 60H66"/></svg><div class="wrap cta__inner"><div data-reveal><p class="eyebrow">Reservas online</p><h2>Tu cancha de pádel te espera.</h2><p>Elegí día y horario libre y confirmá al instante.</p></div><a class="btn btn--terra btn--lg" href="index.html#reservar" data-magnetic data-reveal style="--d:.15s"><span>Reservar Pádel</span></a></div></section>
+<section class="wrap sec gal" id="galeria"><header class="sec__head" data-reveal><div><p class="eyebrow">Galería</p><h2>Así se vive el pádel.</h2></div><p class=meta>Arrastrá para recorrer · tocá para ampliar</p></header><div class="gal__track" tabindex="0" aria-label="Galería de fotos"><button class="gal__item" type="button"><span class="ph"><img data-img="padel/galeria-1" alt="Partido de dobles en cancha de cristal" loading="lazy"></span><span class="gal__cap">Partido de dobles en cancha de cristal</span></button><button class="gal__item" type="button"><span class="ph"><img data-img="padel/galeria-2" alt="Remate contra la pared" loading="lazy"></span><span class="gal__cap">Remate contra la pared</span></button><button class="gal__item" type="button"><span class="ph"><img data-img="padel/galeria-3" alt="Paletas y pelotas listas" loading="lazy"></span><span class="gal__cap">Paletas y pelotas listas</span></button><button class="gal__item" type="button"><span class="ph"><img data-img="padel/galeria-4" alt="Celebrando un punto" loading="lazy"></span><span class="gal__cap">Celebrando un punto</span></button><button class="gal__item" type="button"><span class="ph"><img data-img="padel/galeria-5" alt="La cancha al atardecer" loading="lazy"></span><span class="gal__cap">La cancha al atardecer</span></button><button class="gal__item" type="button"><span class="ph"><img data-img="padel/galeria-6" alt="Después del partido" loading="lazy"></span><span class="gal__cap">Después del partido</span></button></div><div class="gal__line" aria-hidden="true"><i></i></div><span class="gal__ball" aria-hidden="true">Ver</span></section><section class="wrap sec explore"><header class="sec__head" data-reveal><div><p class="eyebrow">Seguí explorando</p><h2>Conocé el club.</h2></div></header><div class="explore__grid" data-reveal><a class="card explore__a" href="torneos.html" style="--c:#173D29"><span>Torneos y eventos</span><svg class="i"><use href="#i-arrow"/></svg></a><a class="card explore__a" href="pickleball.html" style="--c:#C86A4D"><span>Pickleball</span><svg class="i"><use href="#i-arrow"/></svg></a><a class="card explore__a" href="bar.html" style="--c:#C86A4D"><span>El bar</span><svg class="i"><use href="#i-arrow"/></svg></a><a class="card explore__a" href="instalaciones.html" style="--c:#2D7647"><span>Instalaciones</span><svg class="i"><use href="#i-arrow"/></svg></a></div></section><section class="cta"><svg class="cta__g draw" viewBox="0 0 120 120" aria-hidden="true"><path pathLength="1" d="M95 30A46 46 0 1 0 106 60H66"/></svg><div class="wrap cta__inner"><div data-reveal><p class="eyebrow">Reservas online</p><h2>Tu cancha de pádel te espera.</h2><p>Elegí día y horario libre y confirmá al instante.</p></div><a class="btn btn--terra btn--lg" href="index.html#reservar" data-magnetic data-reveal style="--d:.15s"><span>Reservar Pádel</span></a></div></section>
 </main>
 <footer class="footer">
   <div class="wrap footer__top">
-    <a class="logo" href="index.html#inicio" aria-label="GPadel, inicio"><b>GPADEL</b><small>Club · Padel · Pickleball</small></a>
-    <nav aria-label="Pie"><a href="index.html#inicio">Inicio</a><a href="index.html#canchas">Canchas</a><a href="index.html#club">El club</a><a href="index.html#torneos">Torneos</a><a href="index.html#eventos">Eventos</a><a href="index.html#contacto">Contacto</a></nav>
+    <a class="logo" href="index.html#inicio"><img src="img/marcas/logo-B.png" alt="GPadel — Club de pádel y pickleball en Córdoba" height="60" decoding="async" loading="lazy"></a>
+    <nav aria-label="Pie"><a href="index.html#inicio">Inicio</a><a href="index.html#canchas">Canchas</a><a href="index.html#club">El club</a><a href="index.html#torneos">Torneos y eventos</a><a href="index.html#contacto">Contacto</a></nav>
     <div class="footer__soc">
       <a href="https://instagram.com/gpadel_club" target="_blank" rel="noopener" aria-label="Instagram"><svg class="i"><use href="index.html#i-ig"/></svg></a>
       <a data-wa="Hola!" href="index.html#" target="_blank" rel="noopener" aria-label="WhatsApp"><svg class="i"><use href="index.html#i-wa"/></svg></a>
@@ -91,6 +132,7 @@ document.documentElement.classList.add('js');
   </div>
 </footer>
 <a class="fab" id="fab" data-wa="Hola! Quiero hacer una consulta." href="#" target="_blank" rel="noopener" aria-label="Escribinos por WhatsApp"><svg class="i"><use href="#i-wa"/></svg></a>
-<script src="main.js?v=1"></script>
+<dialog class="lb" id="lb" aria-label="Visor de fotos"><div class="lb__stage"><button class="lb__btn lb__x" type="button" aria-label="Cerrar"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button><div class="lb__ph ph"><img alt=""></div></div><div class="lb__bar"><button class="lb__btn lb__prev" type="button" aria-label="Foto anterior"><svg class="i"><use href="#i-arrow"/></svg></button><p><span id="lbCap"></span><small id="lbCount"></small></p><button class="lb__btn lb__next" type="button" aria-label="Foto siguiente"><svg class="i"><use href="#i-arrow"/></svg></button></div></dialog>
+<script src="main.js"></script>
 </body>
 </html>
