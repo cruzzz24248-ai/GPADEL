@@ -220,21 +220,26 @@ document.documentElement.classList.add('js');
       <h2>Reservá tu cancha en segundos.</h2>
       <p class="sub">Mirá en vivo qué horarios están libres y confirmá tu turno al instante, sin esperar respuesta.</p>
       <p class="open-now js-open"></p>
+      <ul class="book__info">
+        <li>Lunes a viernes<b>8:00 a 23:00</b></li>
+        <li>Sábados y domingos<b>9:00 a 22:00</b></li>
+        <li>Canchas<b>4 de pádel · 2 de pickleball</b></li>
+      </ul>
       <ul class="legend" aria-label="Referencias de disponibilidad"><li><i class="dot dot--free"></i>Libre</li><li><i class="dot dot--last"></i>Última cancha</li><li><i class="dot dot--full"></i>Ocupado</li></ul>
     </div>
     <div class="card book__card" id="book" role="group" aria-label="Reservar cancha" data-reveal style="--d:.12s">
       <div class="book__steps" id="bookSteps">
-        <div class="step"><b>1 · Deporte</b>
+        <div class="step"><b><i>1</i>Deporte</b>
           <div class="chips" id="sports">
             <button class="chip" type="button" data-sport="Pádel" aria-pressed="true">Pádel</button>
             <button class="chip" type="button" data-sport="Pickleball" aria-pressed="false">Pickleball</button>
           </div>
         </div>
-        <div class="step"><b>2 · Día</b><div class="chips days" id="days"></div></div>
-        <div class="step"><b>3 · Horario · 1 hora</b><div class="slots" id="slots" aria-live="polite"></div></div>
+        <div class="step"><b><i>2</i>Día</b><div class="chips days" id="days"></div></div>
+        <div class="step"><b><i>3</i>Horario<em>Turnos de 1 hora</em></b><div class="slots" id="slots" aria-live="polite"></div></div>
       </div>
       <form id="bookForm" novalidate>
-        <div class="step"><b>4 · Tus datos</b>
+        <div class="step"><b><i>4</i>Tus datos</b>
           <div class="fields">
             <label class="field"><span>Nombre</span><input id="bName" name="name" autocomplete="name" maxlength="60" required></label>
             <label class="field"><span>WhatsApp</span><input id="bPhone" name="phone" type="tel" inputmode="tel" autocomplete="tel" maxlength="20" placeholder="351 555 0000" required></label>
