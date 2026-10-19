@@ -1,4 +1,3 @@
-/* ============ G PADEL — main.js (v6 · imágenes por carpetas + galerías unificadas) ============ */
 (() => {
   'use strict';
   const $ = (s, c = document) => c.querySelector(s);

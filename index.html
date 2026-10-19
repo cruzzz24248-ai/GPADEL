@@ -118,7 +118,7 @@ document.documentElement.classList.add('js');
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inria+Serif:wght@300;400;700&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Jost:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -170,6 +170,7 @@ document.documentElement.classList.add('js');
 
   <!-- HERO -->
   <section class="hero" id="inicio">
+    <svg class="hero__court draw" viewBox="0 0 1200 700" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><path pathLength="1" d="M80 90H1120V610H80Z"/><path pathLength="1" d="M600 90V610"/><path pathLength="1" d="M340 90V610"/><path pathLength="1" d="M860 90V610"/><path pathLength="1" d="M340 350H860"/></svg>
     <figure class="ph hero__media"><img data-img="principal/hero" alt="Jugador de pádel en una cancha al aire libre"></figure>
     <svg class="hero__g draw" viewBox="0 0 120 120" aria-hidden="true"><path pathLength="1" d="M95 30A46 46 0 1 0 106 60H66"/></svg>
     <div class="wrap hero__inner">
@@ -184,6 +185,7 @@ document.documentElement.classList.add('js');
       <p class="open-now js-open" data-reveal style="--d:1s"></p>
     </div>
   </section>
+
 
   <!-- ELEGÍ TU JUEGO -->
   <section class="wrap sec" id="canchas">
@@ -298,11 +300,13 @@ document.documentElement.classList.add('js');
     </div>
   </section>
 
+
+
   <!-- TORNEOS Y EVENTOS -->
   <section class="wrap sec" id="torneos">
     <header class="sec__head" data-reveal>
       <div><p class="eyebrow">Torneos y eventos</p><h2>Siempre hay un próximo desafío.</h2><p class="sub">Torneos, encuentros y eventos para compartir la pasión por el deporte.</p></div>
-      <a class="link" href="html">Ver todos los eventos <svg class="i"><use href="#i-arrow"/></svg></a>
+      <a class="link" href="torneos.html">Ver todos los eventos <svg class="i"><use href="#i-arrow"/></svg></a>
     </header>
     <div class="event" id="eventos">
       <figure class="ph" data-reveal="clip"><img data-img="principal/torneo" alt="Jugadora en una cancha de pádel" loading="lazy"></figure>
