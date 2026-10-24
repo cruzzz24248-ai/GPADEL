@@ -8,8 +8,6 @@
 
   /* Número de WhatsApp del club (formato internacional, sin + ni espacios) */
   const WHATSAPP = '5490000000000';
-  /* URL de la app web de Google Apps Script (ver Code.gs). Vacío = vista de demostración */
-  const API = '';
 
   /* ---------- Imágenes: data-img="carpeta/nombre" → img/carpeta/nombre.(webp|jpg|png…) ----------
      Ejemplos: data-img="padel/hero"      → img/padel/hero.webp
@@ -32,6 +30,37 @@
     img.src = tries[0];
   }
   $$('img[data-img]').forEach(loadImg);
+
+  /* ---------- Intro (línea de cancha + monograma P/G) ---------- */
+  const intro = $('#intro');
+  const hasIntro = root.classList.contains('has-intro') && intro;
+  if (hasIntro) {
+    const blocked = $$('.site-header, main, .footer, .fab');
+    blocked.forEach(el => { el.inert = true; });
+    const t0 = performance.now();
+    let done = false, opened = false;
+    const open = () => { if (opened) return; opened = true; root.classList.add('intro-open'); document.dispatchEvent(new Event('intro:open')); };
+    const end = () => {
+      if (done) return;
+      done = true; open();
+      blocked.forEach(el => { el.inert = false; });
+      root.classList.remove('has-intro');
+      intro.remove();
+      try { sessionStorage.setItem('gp_intro', '1'); } catch (e) {}
+    };
+    /* Un toque (o Esc) levanta el telón más rápido; si ya se estaba levantando, sigue solo */
+    const skip = () => {
+      if (intro.classList.contains('is-skip') || performance.now() - t0 > 2200) return;
+      intro.classList.add('is-skip'); open();
+    };
+    intro.addEventListener('click', skip);
+    addEventListener('keydown', e => { if (e.key === 'Escape') skip(); });
+    intro.addEventListener('animationend', e => {
+      if (e.target === intro && /^introLift/.test(e.animationName)) end();
+    });
+    setTimeout(open, 2400);   // el contenido empieza a animarse cuando el telón empieza a subir
+    setTimeout(end, 5000);    // seguro: la intro nunca se queda trabada
+  }
 
   /* ---------- Titular: revelado palabra por palabra ---------- */
   $$('[data-split]').forEach(el => {
@@ -68,7 +97,8 @@
       obs.unobserve(en.target);
     });
   }, { threshold: .15, rootMargin: '0px 0px -6% 0px' });
-  $$('[data-reveal], [data-count], .draw:not(.hero__g)').forEach(el => io.observe(el));
+  const startReveal = () => $$('[data-reveal], [data-count], .draw:not(.hero__g)').forEach(el => io.observe(el));
+  if (hasIntro) document.addEventListener('intro:open', startReveal, { once: true }); else startReveal();
 
   /* ---------- Horarios del club (hora de Córdoba) ---------- */
   const TZ = 'America/Argentina/Cordoba';
@@ -91,154 +121,40 @@
   }
   paintOpen(); setInterval(paintOpen, 60000);
 
-  /* ---------- Reservas con disponibilidad en vivo ---------- */
-  const daysEl = $('#days'), slotsEl = $('#slots');
+  /* ---------- Reserva por WhatsApp: deporte + día → consulta de horarios libres ---------- */
+  const daysEl = $('#days');
   if (daysEl) {
-    const COURTS = { 'Pádel': 4, 'Pickleball': 2 };
-    const pad = n => String(n).padStart(2, '0');
-    const iso = d => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
-    const go = $('#bookGo'), sum = $('#bookSum'), msg = $('#bookMsg'), form = $('#bookForm'),
-      steps = $('#bookSteps'), ok = $('#bookOk'), nameEl = $('#bName'), phoneEl = $('#bPhone');
-    const st = { sport: 'Pádel', day: 0, hour: null, busy: null, err: false, sending: false };
+    const LONG = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'];
+    const go = $('#bookGo'), sum = $('#bookSum'), form = $('#bookForm');
+    const st = { sport: 'Pádel', day: 0 };
     const base = clubNow(); base.setHours(0, 0, 0, 0);
     const days = [...Array(7)].map((_, i) => { const d = new Date(base); d.setDate(base.getDate() + i); return d; });
-    const dayWord = i => i === 0 ? 'hoy' : i === 1 ? 'mañana' : `el ${DAYS[days[i].getDay()]} ${days[i].getDate()}`;
+    const dayWord = i => i === 0 ? 'hoy' : i === 1 ? 'mañana' : `el ${LONG[days[i].getDay()]} ${days[i].getDate()}/${days[i].getMonth() + 1}`;
     const press = (box, btn) => $$('.chip', box).forEach(c => c.setAttribute('aria-pressed', c === btn));
-    const waLink = t => `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(t)}`;
-
-    /* --- Fuente de datos: Google Sheets (real) o demostración local --- */
-    const real = {
-      async availability() {
-        const r = await fetch(`${API}?action=availability&from=${iso(days[0])}&days=${days.length}`);
-        const j = await r.json(); if (!j.ok) throw 0; return j.busy;
-      },
-      async book(b) {
-        const r = await fetch(API, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(b) });
-        return r.json();
-      }
-    };
-    const DEMO_KEY = 'gpadel-demo';
-    const mine = () => { try { return JSON.parse(localStorage.getItem(DEMO_KEY) || '[]'); } catch (e) { return []; } };
-    const demo = {
-      async availability() {
-        const out = {};
-        days.forEach(d => {
-          const k = iso(d); out[k] = {};
-          Object.keys(COURTS).forEach((s, si) => {
-            out[k][s] = {};
-            for (let h = 8; h < 23; h++) {
-              const v = (d.getDate() * 31 + h * 17 + si * 5) % 11;
-              out[k][s][h] = v > 8 ? COURTS[s] : v > 6 ? COURTS[s] - 1 : 0;
-            }
-          });
-        });
-        mine().forEach(b => { const o = out[b.date] && out[b.date][b.sport]; if (o) o[b.hour] = (o[b.hour] || 0) + 1; });
-        return out;
-      },
-      async book(b) {
-        const free = COURTS[b.sport] - (((st.busy[b.date] || {})[b.sport] || {})[b.hour] || 0);
-        if (free <= 0) return { ok: false, reason: 'full' };
-        try { localStorage.setItem(DEMO_KEY, JSON.stringify([...mine(), b])); } catch (e) {}
-        return { ok: true, code: 'GP-' + (1000 + Math.floor(Math.random() * 9000)), court: COURTS[b.sport] - free + 1 };
-      }
-    };
-    const backend = API ? real : demo;
-    $('#bookDemo').hidden = !!API;
-
-    /* --- Disponibilidad --- */
-    const free = (i, h) => COURTS[st.sport] - ((((st.busy || {})[iso(days[i])] || {})[st.sport] || {})[h] || 0);
-    const slotsFor = i => {
-      const [o, c] = hoursOf(days[i]), now = clubNow(), out = [];
-      for (let h = o; h < c; h++) if (i > 0 || h > now.getHours()) out.push(h);
-      return out;
-    };
-
-    function renderSlots() {
-      slotsEl.replaceChildren();
-      if (st.err) {
-        slotsEl.innerHTML = `<p class="slots__empty">No pudimos cargar la disponibilidad. <a class="link" href="${waLink('Hola! Quiero reservar una cancha.')}" target="_blank" rel="noopener">Reservá por WhatsApp</a></p>`;
-        return;
-      }
-      if (!st.busy) { for (let i = 0; i < 8; i++) { const s = document.createElement('span'); s.className = 'chip skel'; slotsEl.append(s); } return; }
-      const list = slotsFor(st.day);
-      if (!list.length) { slotsEl.innerHTML = '<p class="slots__empty">No quedan turnos para este día. Probá con otro.</p>'; return; }
-      if (st.hour && free(st.day, st.hour) <= 0) st.hour = null;      // se ocupó mientras mirabas
-      list.forEach(h => {
-        const f = free(st.day, h), b = document.createElement('button');
-        b.type = 'button'; b.className = 'chip' + (f === 1 ? ' is-last' : '');
-        b.innerHTML = `<span>${hh(h)}</span><small>${f <= 0 ? 'Ocupado' : f === 1 ? 'Última' : f + ' libres'}</small>`;
-        b.disabled = f <= 0;
-        b.setAttribute('aria-pressed', String(st.hour === h));
-        b.setAttribute('aria-label', `${hh(h)}, ${f <= 0 ? 'ocupado' : f + (f === 1 ? ' cancha libre' : ' canchas libres')}`);
-        b.addEventListener('click', () => { st.hour = h; press(slotsEl, b); update(); });
-        slotsEl.append(b);
-      });
-    }
-
-    function valid() {
-      return st.hour && nameEl.value.trim().length >= 2 && phoneEl.value.replace(/\D/g, '').length >= 8;
-    }
-    function update() {
-      if (!st.hour) sum.textContent = 'Elegí un horario para continuar.';
-      else sum.innerHTML = `<b>${st.sport}</b> · ${dayWord(st.day)} · ${hh(st.hour)} · 1 hora`;
-      go.setAttribute('aria-disabled', String(!valid() || st.sending));
-    }
-    const render = () => { renderSlots(); update(); };
-    async function refresh() {
-      try { st.busy = await backend.availability(); st.err = false; } catch (e) { if (!st.busy) st.err = true; }
-      render();
-    }
-
-    /* --- Controles --- */
+    /* "Hoy" solo si el club todavía no cerró */
+    const open = i => { const [, c] = hoursOf(days[i]); return i > 0 || clubNow().getHours() + 1 < c; };
+    const update = () => { sum.innerHTML = `<b>${st.sport}</b> · ${dayWord(st.day)}`; };
     days.forEach((d, i) => {
       const b = document.createElement('button');
       b.type = 'button'; b.className = 'chip'; b.setAttribute('aria-pressed', 'false');
       b.innerHTML = `<small>${i === 0 ? 'Hoy' : DAYS[d.getDay()]}</small><strong>${d.getDate()}</strong>`;
-      b.addEventListener('click', () => { st.day = i; st.hour = null; press(daysEl, b); render(); });
+      b.disabled = !open(i);
+      b.addEventListener('click', () => { st.day = i; press(daysEl, b); update(); });
       daysEl.append(b);
     });
     $$('#sports .chip').forEach(b => b.addEventListener('click', () => {
-      st.sport = b.dataset.sport; st.hour = null; press($('#sports'), b); render();
+      st.sport = b.dataset.sport; press($('#sports'), b); update();
     }));
-    [nameEl, phoneEl].forEach(el => el.addEventListener('input', () => { msg.textContent = ''; update(); }));
-
-    const showErr = t => { msg.className = 'book__msg is-error'; msg.textContent = t; };
-    form.addEventListener('submit', async e => {
+    form.addEventListener('submit', e => {
       e.preventDefault();
-      if (st.sending) return;
-      if (!valid()) {
-        showErr(!st.hour ? 'Elegí un horario disponible.' : 'Completá tu nombre y WhatsApp para confirmar.');
-        (!st.hour ? slotsEl : nameEl.value.trim().length < 2 ? nameEl : phoneEl).scrollIntoView({ block: 'center', behavior: reduce ? 'auto' : 'smooth' });
-        return;
-      }
-      const b = { sport: st.sport, date: iso(days[st.day]), hour: st.hour, name: nameEl.value.trim(), phone: phoneEl.value.trim(), website: $('#bWeb').value };
-      st.sending = true; go.firstElementChild.textContent = 'Reservando…'; update(); msg.textContent = '';
-      let res;
-      try { res = await backend.book(b); } catch (err) { res = { ok: false, reason: 'error' }; }
-      st.sending = false; go.firstElementChild.textContent = 'Confirmar reserva';
-      if (res.ok) {
-        const when = dayWord(st.day), info = `${b.sport} · ${when} · ${hh(b.hour)}${res.court ? ' · Cancha ' + res.court : ''}`;
-        $('#okInfo').textContent = info; $('#okCode').textContent = res.code;
-        $('#okWa').href = waLink(`Hola! Reservé online: ${info}. Código ${res.code}. A nombre de ${b.name}.`);
-        steps.hidden = form.hidden = true; ok.hidden = false; ok.scrollIntoView({ block: 'center', behavior: reduce ? 'auto' : 'smooth' });
-        st.hour = null; refresh();
-        return;
-      }
-      const T = { full: 'Ese horario se acaba de ocupar. Elegí otro, te mostramos los que quedan.', limit: 'Ya tenés 2 reservas ese día. Escribinos por WhatsApp si necesitás más.', invalid: 'Revisá los datos e intentá de nuevo.' };
-      showErr(T[res.reason] || 'No pudimos confirmar la reserva. Probá de nuevo o escribinos por WhatsApp.');
-      st.hour = null; refresh();
+      const text = `Hola! Quiero consultar los horarios disponibles de ${st.sport} para ${dayWord(st.day)}.`;
+      const a = document.createElement('a');
+      a.href = `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(text)}`; a.target = '_blank'; a.rel = 'noopener';
+      document.body.append(a); a.click(); a.remove();
     });
-    $('#okAgain').addEventListener('click', () => {
-      ok.hidden = true; steps.hidden = form.hidden = false; form.reset(); msg.textContent = ''; render();
-    });
-
-    /* Día inicial: hoy, o el siguiente si ya no quedan horarios */
-    st.day = Math.max(0, days.findIndex((_, i) => slotsFor(i).length));
+    st.day = Math.max(0, days.findIndex((_, i) => open(i)));
     press(daysEl, $$('.chip', daysEl)[st.day]);
-    render(); refresh();
-    /* Disponibilidad siempre fresca */
-    setInterval(() => { if (!document.hidden && !st.sending) refresh(); }, 45000);
-    document.addEventListener('visibilitychange', () => { if (!document.hidden) refresh(); });
+    update();
   }
 
   /* ---------- Galerías (varias por página): visor, cinta, mosaico, pelota ---------- */

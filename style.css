@@ -113,8 +113,8 @@ b{font-weight:600;color:var(--ink)}
 .hero__note b{font-weight:600}
 @keyframes pulse{70%{box-shadow:0 0 0 9px transparent}100%{box-shadow:0 0 0 0 transparent}}
 @keyframes fade{to{opacity:1}}
-.hero__g{position:absolute;right:2%;bottom:-6%;width:clamp(120px,16vw,210px);fill:none;stroke:#fff;stroke-width:.9;opacity:.75;z-index:1;pointer-events:none}
-.draw path{stroke-dasharray:1;stroke-dashoffset:1;stroke-linecap:round}
+.hero__g{position:absolute;right:2%;bottom:-6%;width:clamp(88px,11.7vw,153px);fill:none;stroke:#fff;stroke-width:1.1;opacity:.75;z-index:1;pointer-events:none}
+.draw path{stroke-dasharray:1 2;stroke-dashoffset:1;stroke-linecap:round}
 .hero .draw path{animation:draw 3s .6s var(--ease) forwards}
 .draw.in path{animation:draw 2.4s .2s var(--ease) forwards}
 @keyframes draw{to{stroke-dashoffset:0}}
@@ -171,7 +171,7 @@ b{font-weight:600;color:var(--ink)}
 .cta{position:relative;background:var(--brand);color:#fff;overflow:hidden;isolation:isolate}
 .cta__img{position:absolute;inset:0 0 0 auto;width:55%;z-index:-1;background:transparent;
   -webkit-mask-image:linear-gradient(90deg,transparent,#000 60%);mask-image:linear-gradient(90deg,transparent,#000 60%)}
-.cta__g{position:absolute;right:3%;top:8%;width:130px;fill:none;stroke:#fff;stroke-width:.8;opacity:.7}
+.cta__g{position:absolute;right:3%;top:6%;width:68px;fill:none;stroke:#fff;stroke-width:1;opacity:.7}
 .cta__inner{display:flex;align-items:center;justify-content:space-between;gap:2rem;padding-block:clamp(2.2rem,5vw,3.4rem)}
 .cta .eyebrow,.cta h2{color:#fff}
 .cta p{color:rgba(255,255,255,.85)}
@@ -278,7 +278,7 @@ b{font-weight:600;color:var(--ink)}
     mask-image:linear-gradient(180deg,transparent 0,#000 22%,#000 72%,transparent 100%)}
   .hero__inner{padding-top:clamp(1.6rem,6vw,2.4rem);padding-bottom:.5rem}
   .hero h1{text-shadow:none}
-  .hero__g{top:auto;bottom:1.2rem;right:5%;width:84px}
+  .hero__g{top:auto;bottom:1.2rem;right:5%;width:62px}
   .duo,.space,.event{grid-template-columns:1fr}
   .space__img{margin-right:calc(var(--gut)*-1);order:-1}
   .sec__head{flex-direction:column;align-items:flex-start}
@@ -398,7 +398,7 @@ b{font-weight:600;color:var(--ink)}
 .hp{position:absolute;left:-9999px;width:0;height:0;opacity:0}
 .book__sum{display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;padding:.9rem .9rem .9rem 1.2rem;border-radius:18px;background:var(--surface);border:1px solid var(--line)}
 .book__sum p{min-width:0;font-size:.85rem;color:var(--ink-2)}
-.book__sum p::before{content:"Tu turno";display:block;margin-bottom:.15rem;font-size:.6rem;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-2)}
+.book__sum p::before{content:"Tu consulta";display:block;margin-bottom:.15rem;font-size:.6rem;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-2)}
 .book__sum p b{font-family:var(--ff-t);font-weight:400;font-size:1.15rem;color:var(--ink)}
 .book__sum .btn{padding:.95rem 1.7rem}
 #bookGo{background:var(--sp);box-shadow:0 14px 26px -14px var(--sp)}
@@ -710,3 +710,25 @@ h3{font-size:clamp(1.6rem,2.3vw,2.1rem);line-height:1.1;font-weight:600;letter-s
   .sp-stats b{font-size:2.2rem}
 }
 @media (prefers-reduced-motion:reduce){.book__tick path{stroke-dashoffset:0}}
+
+/* ===== Intro: línea de cancha + monograma P/G ===== */
+.intro{display:none}
+.has-intro .intro{display:grid;place-items:center;position:fixed;inset:0;z-index:500;background:#FBFAF7;box-shadow:0 1px 0 rgba(23,61,41,.18);animation:introLift .9s cubic-bezier(.76,0,.24,1) 2.55s forwards}
+.has-intro,.has-intro body{overflow:hidden}
+.intro.is-skip{animation:introLiftQ .6s cubic-bezier(.76,0,.24,1) forwards}
+.intro__court{position:absolute;inset:0;width:100%;height:100%;fill:none;stroke:#2D7647;stroke-width:1.2;opacity:.28}
+.intro__court path,.intro__mono path{stroke-dasharray:1 2;stroke-dashoffset:1;stroke-linecap:round}
+.intro__court path{vector-effect:non-scaling-stroke;animation:introDraw 1.6s var(--ease) forwards}
+.intro__court path:nth-child(1){animation-delay:.1s}.intro__court path:nth-child(3){animation-delay:.3s}.intro__court path:nth-child(2){animation-delay:.45s}.intro__court path:nth-child(4){animation-delay:.6s}.intro__court path:nth-child(5){animation-delay:.8s}
+.intro__box{position:relative;display:grid;justify-items:center;gap:.9rem;text-align:center}
+.intro__mono{width:clamp(130px,34vw,200px);height:auto;fill:none;overflow:visible}
+.intro__mono .p{stroke:#111;stroke-width:13.3;stroke-linejoin:round;animation:introDraw .9s ease-in-out .3s forwards}
+.intro__mono .g{stroke:#016838;stroke-width:9.4;stroke-linejoin:miter;stroke-miterlimit:10;animation:introDraw .75s ease-in-out 1.2s forwards}
+.intro__name{font:600 clamp(1.7rem,6vw,2.4rem)/1 var(--ff-t);color:#111;letter-spacing:.01em;animation:introUp .9s var(--ease) 1.75s both}
+.intro__name i{font-weight:500}
+.intro__tag{font:500 .74rem var(--ff-s);letter-spacing:.34em;text-transform:uppercase;color:var(--ink-2);animation:introUp .9s var(--ease) 2s both}
+html.has-intro:not(.intro-open) .w>span,html.has-intro:not(.intro-open) .hero .draw path{animation-play-state:paused}
+@keyframes introDraw{to{stroke-dashoffset:0}}
+@keyframes introUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes introLift{to{transform:translateY(-101%)}}
+@keyframes introLiftQ{to{transform:translateY(-101%)}}
